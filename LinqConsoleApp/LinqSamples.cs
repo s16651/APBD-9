@@ -198,9 +198,18 @@ namespace LinqConsoleApp
                           Nazwisko = emp.Ename,
                           Zawod = emp.Job
                       };
+            //Console.WriteLine(res);
 
 
             //2. Lambda and Extension methods
+            var res2 = Emps.Where(Emp => Emp.Job == "Backend Programmer")
+                              .Select(emp => new
+                              {
+                                  FirstName = emp.Ename,
+                                  emp.Job,
+                                  emp.Deptno
+                              });
+            //Console.WriteLine(res);
         }
 
         /// <summary>
@@ -208,8 +217,15 @@ namespace LinqConsoleApp
         /// </summary>
         public void Task2()
         {
-
-
+            var res = Emps.Where(emp => emp.Job == "Frontend programmer" && emp.Salary > 1000)
+                           .OrderByDescending(emp => emp.Ename)
+                           .Select(emp => new
+                           {
+                               name = emp.Ename,
+                               job = emp.Job,
+                           });
+            res.ToList();
+            //Console.WriteLine(res);
         }
 
         /// <summary>
@@ -217,7 +233,8 @@ namespace LinqConsoleApp
         /// </summary>
         public void Task3()
         {
-            
+            var res = Emps.Max(emp => emp.Salary);
+            //Console.WriteLine(res);
         }
 
         /// <summary>
@@ -225,7 +242,9 @@ namespace LinqConsoleApp
         /// </summary>
         public void Task4()
         {
-            
+            var maxSalary = Emps.Max(emp => emp.Salary);
+            var res = Emps.Where(emp => emp.Salary == maxSalary);
+            //Console.WriteLine(res);
         }
 
         /// <summary>
@@ -233,7 +252,12 @@ namespace LinqConsoleApp
         /// </summary>
         public void Task5()
         {
-            
+            var res = Emps.Select(emp => new
+            {
+                FirstName = emp.Ename,
+                EmployeeJob = emp.Job
+            });
+            //Console.WriteLine(res);
         }
 
         /// <summary>
@@ -243,7 +267,18 @@ namespace LinqConsoleApp
         /// </summary>
         public void Task6()
         {
-           
+            var res= from emp in Emps
+                       join dept in Depts
+                       on emp.Deptno equals dept.Deptno
+                       select new
+                       {
+                           EmployeeName = emp.Ename,
+                           Employeejob = emp.Job,
+                           Deparment = dept.Dname
+
+                       };
+            res.ToList();
+            //Console.WriteLine(res);
         }
 
         /// <summary>
@@ -251,7 +286,13 @@ namespace LinqConsoleApp
         /// </summary>
         public void Task7()
         {
-            
+            var res = Emps.Select(emp => new
+            {
+                EmployeeJob = Emps.GroupBy(emp => emp.Job),
+                EmployeeNumber = Emps.GroupBy(emp => emp.Job).Count()
+            });
+            res.ToList();
+            //Console.WriteLine(res);
         }
 
         /// <summary>
@@ -260,7 +301,8 @@ namespace LinqConsoleApp
         /// </summary>
         public void Task8()
         {
-            
+            var res = Emps.Any(emp => emp.Job == "Backend programmer");
+            Console.WriteLine(res);
         }
 
         /// <summary>
@@ -269,7 +311,9 @@ namespace LinqConsoleApp
         /// </summary>
         public void Task9()
         {
-            
+            var res = Emps.Where(emp => emp.Job == "Frontend programmer")
+                .OrderByDescending(emp => emp.HireDate).First();
+            //Console.WriteLine(res);
         }
 
         /// <summary>
@@ -279,20 +323,31 @@ namespace LinqConsoleApp
         /// </summary>
         public void Task10()
         {
-           
+            var res = Emps.Select(emp => new
+            {
+                emp.Ename,
+                emp.Job,
+                emp.HireDate
+            }
+              ).Union(new[] { new { Ename = "No value", Job = (string)null, HireDate = (DateTime?)null } });
+            res.ToList();
+            //Console.WriteLine(res);
         }
 
         //Find the employee with the highest salary using the Aggregate () method
         public void Task11()
         {
-            
+            var res = Emps.Aggregate((emp1, emp2) => emp1.Salary > emp2.Salary ? emp1 : emp2);
+            //Console.WriteLine(res);
         }
 
         //Using the LINQ language and the SelectMany method, 
         //perform a CROSS JOIN join between collections Emps and Depts
         public void Task12()
         {
-            
+            var res = Emps.SelectMany(d => Depts,
+                                      (e, d) => new { e, d });
+            //Console.WriteLine(res);
         }
     }
 }
